@@ -1,9 +1,10 @@
-//UI for user account registration
-
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  // toggle between login and register
+  const navigate = useNavigate();
+
+  // toggle between login and sign up
   const [isLogin, setIsLogin] = useState(true);
 
   // store input values
@@ -45,9 +46,10 @@ function Login() {
         // show success message
         setMessage(data.message || "success");
 
-        // if login worked, store user in local storage
+        // if login worked, store user and go to home page
         if (isLogin && data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
+          navigate("/home");
         }
       } else {
         // show error from backend
@@ -62,10 +64,10 @@ function Login() {
   return (
     <div style={{ maxWidth: "400px", margin: "40px auto" }}>
       {/* title changes based on mode */}
-      <h2>{isLogin ? "Login" : "Register"}</h2>
+      <h2>{isLogin ? "Login" : "Sign Up"}</h2>
 
       <form onSubmit={handleSubmit}>
-        {/* only show username for register */}
+        {/* only show username for sign up */}
         {!isLogin && (
           <div style={{ marginBottom: "10px" }}>
             <label>Username</label>
@@ -105,14 +107,14 @@ function Login() {
 
         {/* submit button */}
         <button type="submit">
-          {isLogin ? "Login" : "Register"}
+          {isLogin ? "Login" : "Sign Up"}
         </button>
       </form>
 
       {/* show success/error message */}
       <p>{message}</p>
 
-      {/* button to switch between login/register */}
+      {/* button to switch between login/sign up */}
       <button
         onClick={() => {
           setIsLogin(!isLogin);
@@ -120,7 +122,7 @@ function Login() {
         }}
         style={{ marginTop: "10px" }}
       >
-        Switch to {isLogin ? "Register" : "Login"}
+        Switch to {isLogin ? "Sign Up" : "Login"}
       </button>
     </div>
   );
