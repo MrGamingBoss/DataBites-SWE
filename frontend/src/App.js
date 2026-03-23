@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import LogFood from "./pages/LogFood";
+import History from "./pages/History";
 
 function App() {
   return (
@@ -13,6 +14,12 @@ function App() {
           path="/home"
           element={
             localStorage.getItem("user") ? <LogFood /> : <Login />
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            localStorage.getItem("user") ? <History /> : <Login />
           }
         />
       </Routes>
