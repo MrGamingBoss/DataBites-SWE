@@ -11,10 +11,10 @@ def test_get_history():
     print("--- Testing GET /history/1 ---")
 
     response = requests.get(f"{BASE_URL}/history/1")
-
     print("Status Code:", response.status_code)
-    print("Logs returned:", len(response.json()))
-    print("First log:", response.json()[0] if response.json() else "none")
+    print("Raw Text:", response.text)
+    print("Parsed JSON:", response.json())
+    print("Type:", type(response.json()))
 
 
 def test_get_history_bad_user():

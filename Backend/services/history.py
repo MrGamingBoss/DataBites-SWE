@@ -1,12 +1,14 @@
 #History Features - handles getting, editing, deleting, and undoing food logs
 from flask import Blueprint, request, jsonify
 import sqlite3
+import os
 
 # blueprint for history routes
 history_bp = Blueprint('history', __name__)
 
 # same db path as the other files
-DATABASE = "../DataBase/databites.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.abspath(os.path.join(BASE_DIR, "../../DataBase/databites.db"))
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)

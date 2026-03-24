@@ -5,7 +5,7 @@ from flask_cors import CORS
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from services.meal_log import meal_log_bp
-from history import history_bp
+from services.history import history_bp
 
 # create flask app
 app = Flask(__name__)
