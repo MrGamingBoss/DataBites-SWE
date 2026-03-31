@@ -1,0 +1,137 @@
+.login-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  /* Background image */
+  background: url("../assets/background.png") no-repeat center;
+  background-size: 80%;
+}
+
+/* Soft cream overlay (VERY IMPORTANT) */
+.login-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 250, 245, 0.85); /* light cream overlay */
+  z-index: 0;
+}
+
+/* Main content container */
+.login-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Card */
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 22px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Title box */
+.login-title-box {
+  background: #dfeacc;
+  border: 2px solid #c8d7b0;
+  border-radius: 16px;
+  padding: 14px 28px;
+  margin-bottom: 18px;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-title {
+  font-family: "Jacques Francois", serif;
+  font-size: 38px;
+  color: #1f1f1f;
+  margin: 0;
+}
+
+/* Subtitle */
+.login-subtitle {
+  font-family: "Instrument Serif", serif;
+  font-size: 18px;
+  color: #333;
+  margin: 0 0 26px 0;
+  line-height: 1.5;
+}
+
+/* Form */
+.login-form {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form-group {
+  width: 100%;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.login-label {
+  font-size: 16px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.login-input {
+  width: 100%;
+  height: 46px;
+  border: 1.5px solid #ddd8d4;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 16px;
+  outline: none;
+}
+
+.login-input:focus {
+  border-color: #9eb37b;
+  box-shadow: 0 0 0 3px rgba(158, 179, 123, 0.18);
+}
+
+/* Buttons */
+.login-button {
+  width: 100%;
+  height: 46px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.login-button-primary {
+  background: #91ab6f;
+  color: white;
+}
+
+.login-button-secondary {
+  background: #eef4e5;
+  color: #333;
+}
+
+/* Message */
+.login-message {
+  font-size: 14px;
+  margin-top: 10px;
+}

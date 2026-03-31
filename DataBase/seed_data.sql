@@ -19,12 +19,10 @@
 -- USERS
 -- 3 test accounts, password for all is: test1234
 
-INSERT INTO users (username, email, password_hash, display_name) VALUES
-    ('alice', 'alice@test.com', 'pbkdf2:sha256:test_hash_alice', 'Alice'),
-    ('bob',   'bob@test.com',   'pbkdf2:sha256:test_hash_bob',   'Bob'),
-    ('carol', 'carol@test.com', 'pbkdf2:sha256:test_hash_carol', 'Carol');
-
-
+INSERT INTO users (email, password_hash, display_name) VALUES
+    ('alice@test.com', 'pbkdf2:sha256:test_hash_alice', 'Alice'),
+    ('bob@test.com',   'pbkdf2:sha256:test_hash_bob',   'Bob'),
+    ('carol@test.com', 'pbkdf2:sha256:test_hash_carol', 'Carol');
 ----------------------------------------------------------------
 -- FOOD LOGS — Alice (user_id = 1) — 45 entries
 -- Covers all meal types, all moods, with and without notes,

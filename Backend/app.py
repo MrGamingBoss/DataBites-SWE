@@ -1,4 +1,4 @@
-#main entry point for server; routes frontend request to specific services
+# main entry point for server; routes frontend request to specific services
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -20,7 +20,7 @@ DATABASE = "../DataBase/databites.db"
 
 # helper function to connect to database
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE, timeout=10)
     conn.row_factory = sqlite3.Row  # lets us access columns by name
     return conn
 
@@ -36,40 +36,40 @@ def home():
 def register():
     data = request.get_json()
 
-    # get values from frontend
-    username = data.get("username")
     email = data.get("email")
     password = data.get("password")
 
-    # make sure nothing is missing
-    if not username or not email or not password:
+    if not email or not password:
         return jsonify({"error": "missing required fields"}), 400
 
-    # hash the password before storing it
     password_hash = generate_password_hash(password)
+
+    # auto-generate username from email
+    username = email.split("@")[0]
+
+    conn = None
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # insert new user into database
         cursor.execute("""
             INSERT INTO users (username, email, password_hash)
             VALUES (?, ?, ?)
         """, (username, email, password_hash))
 
         conn.commit()
-        conn.close()
-
         return jsonify({"message": "user registered"}), 201
 
-    # happens if email or username already exists (because of UNIQUE constraint)
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "user already exists"}), 409
+    except sqlite3.IntegrityError as e:
+        return jsonify({"error": str(e)}), 409
 
-    # catch anything else
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+    finally:
+        if conn:
+            conn.close()
 
 
 # login existing user
@@ -84,27 +84,35 @@ def login():
     if not email or not password:
         return jsonify({"error": "missing email or password"}), 400
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    conn = None
 
-    # find user by email
-    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-    user = cursor.fetchone()
-    conn.close()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    # check if user exists and password matches
-    if user and check_password_hash(user["password_hash"], password):
-        return jsonify({
-            "message": "login successful",
-            "user": {
-                "user_id": user["user_id"],
-                "username": user["username"],
-                "email": user["email"]
-            }
-        }), 200
+        # find user by email
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
 
-    # if login fails
-    return jsonify({"error": "invalid email or password"}), 401
+        # check if user exists and password matches
+        if user and check_password_hash(user["password_hash"], password):
+            return jsonify({
+                "message": "login successful",
+                "user": {
+                    "user_id": user["user_id"],
+                    "email": user["email"]
+                }
+            }), 200
+
+        # if login fails
+        return jsonify({"error": "invalid email or password"}), 401
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if conn:
+            conn.close()
 
 
 # run the server
