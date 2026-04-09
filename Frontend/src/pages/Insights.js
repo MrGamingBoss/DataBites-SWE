@@ -1,7 +1,6 @@
 // Insights.js
 // Habit summaries and eating pattern insights for the user.
 // PBI #4 - View weekly and monthly food log trends with generated summaries
-// Mirrors the structure and style of History.jsx
 
 import { useState, useEffect } from "react";
 
