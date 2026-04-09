@@ -6,7 +6,22 @@ import { useState, useEffect } from "react";
 const API_BASE = "http://127.0.0.1:5000";
 
 const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack", "other"];
-const MOODS      = ["happy", "stressed", "tired", "neutral", "sad", "excited"];
+const MOOD_COLORS = {
+  happy:       { bg: "#dcfce7", color: "#15803d" },
+  satisfied:   { bg: "#d1fae5", color: "#065f46" },
+  hungry:      { bg: "#ffedd5", color: "#c2410c" },
+  craving:     { bg: "#fce7f3", color: "#be185d" },
+  indulgent:   { bg: "#fef9c3", color: "#a16207" },
+  energized:   { bg: "#dbeafe", color: "#1d4ed8" },
+  sluggish:    { bg: "#e5e7eb", color: "#4b5563" },
+  nostalgic:   { bg: "#fdf2f8", color: "#9d174d" },
+  comforted:   { bg: "#fef3c7", color: "#92400e" },
+  adventurous: { bg: "#d1fae5", color: "#047857" },
+  bored:       { bg: "#f3f4f6", color: "#6b7280" },
+  stressed:    { bg: "#fee2e2", color: "#dc2626" },
+  tired:       { bg: "#ede9fe", color: "#6d28d9" },
+  sad:         { bg: "#e0f2fe", color: "#0369a1" },
+};
 
 // formats a datetime string into a readable format
 function formatDate(dt) {
