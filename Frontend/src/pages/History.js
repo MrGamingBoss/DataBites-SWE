@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 const API_BASE = "http://127.0.0.1:5000";
 
 const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack", "other"];
+const MOODS = ["happy", "satisfied", "hungry", "craving", "indulgent", "energized", "sluggish", "nostalgic", "comforted", "adventurous", "bored", "stressed", "tired", "sad"];
 const MOOD_COLORS = {
   happy:       { bg: "#dcfce7", color: "#15803d" },
   satisfied:   { bg: "#d1fae5", color: "#065f46" },
