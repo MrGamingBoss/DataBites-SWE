@@ -10,7 +10,8 @@ import os
 
 insights_bp = Blueprint("insights", __name__)
 
-DB_PATH = os.environ.get("DB_PATH", "databites.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH  = os.path.abspath(os.path.join(BASE_DIR, "../../DataBase/databites.db"))
 
 
 def get_db():
