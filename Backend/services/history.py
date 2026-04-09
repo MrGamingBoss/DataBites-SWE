@@ -79,11 +79,19 @@ def edit_log(log_id):
             return jsonify({"error": "log not found"}), 404
 
         # if a field wasnt sent just keep the old value
+        VALID_MOODS = {"happy", "satisfied", "hungry", "craving", "indulgent", "energized",
+                       "sluggish", "nostalgic", "comforted", "adventurous", "bored", "stressed",
+                       "tired", "sad"}
+
         food_name = data.get("food_name", existing["food_name"])
         logged_at = data.get("logged_at",  existing["logged_at"])
         meal_type = data.get("meal_type",  existing["meal_type"])
         mood      = data.get("mood",       existing["mood"])
         notes     = data.get("notes",      existing["notes"])
+
+        if mood and mood not in VALID_MOODS:
+            conn.close()
+            return jsonify({"error": f"invalid mood: {mood}"}), 400
 
         cursor.execute("""
             UPDATE food_logs
