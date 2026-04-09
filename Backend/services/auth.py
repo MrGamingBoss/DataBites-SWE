@@ -40,9 +40,9 @@ def register():
         cursor = conn.cursor()
 
         cursor.execute("""
-                       INSERT INTO users (username, email, password_hash)
-                       VALUES (?, ?, ?)
-                       """, (username, email, password_hash))
+                       INSERT INTO users (email, password_hash)
+                       VALUES (?, ?)
+                       """, (email, password_hash))
 
         conn.commit()
         return jsonify({"message": "user registered"}), 201
