@@ -45,7 +45,9 @@ CREATE TABLE food_logs (
     food_name    TEXT     NOT NULL,
     logged_at    DATETIME NOT NULL,             -- date + time of the meal
     meal_type    TEXT     CHECK(meal_type IN ('breakfast', 'lunch', 'dinner', 'snack', 'other')),
-    mood         TEXT     CHECK(mood IN ('happy', 'stressed', 'tired', 'neutral', 'sad', 'excited')), -- PBI #3 mood dropdown
+    mood         TEXT     CHECK(mood IN ('happy', 'satisfied', 'hungry', 'craving', 'indulgent',
+                                         'energized', 'sluggish', 'nostalgic', 'comforted',
+                                         'adventurous', 'bored', 'stressed', 'tired', 'sad')), -- PBI #3 mood dropdown
     notes        TEXT,                          -- optional context e.g. "out with friends"
     deleted_at   DATETIME DEFAULT NULL,         -- NULL = active, timestamp = soft-deleted (enables undo)
     created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
