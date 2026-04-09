@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import LogFood from "./pages/LogFood";
 import History from "./pages/History";
+import Insights from "./pages/Insights";
 
 function App() {
   return (
@@ -20,6 +21,12 @@ function App() {
           path="/history"
           element={
             localStorage.getItem("user") ? <History /> : <Login />
+          }
+        />
+        <Route
+          path="/insights"
+          element={
+            localStorage.getItem("user") ? <Insights /> : <Login />
           }
         />
       </Routes>
