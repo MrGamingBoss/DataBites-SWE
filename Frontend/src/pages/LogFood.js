@@ -2,7 +2,6 @@
 // Food logging page — lets users log meals, mood, and notes.
 // PBI #2 - Log food entries
 // PBI #3 - Meal context: meal_type, mood, notes
-// Mirrors the inline style approach used in History.js and Insights.js
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +14,21 @@ const MOODS = [
   "energized", "sluggish", "nostalgic", "comforted", "adventurous",
   "bored", "stressed", "tired", "sad"
 ];
+
+const MEAL_ICONS = {
+  breakfast: "🍳",
+  lunch: "🥪",
+  dinner: "🍽️",
+  snack: "🍎",
+  other: "🍴",
+};
+
+const MOOD_ICONS = {
+  happy: "😊", satisfied: "😌", hungry: "🤤", craving: "😋",
+  indulgent: "🧁", energized: "⚡", sluggish: "😴", nostalgic: "🌸",
+  comforted: "🫂", adventurous: "🌟", bored: "😐", stressed: "😤",
+  tired: "😪", sad: "🥺",
+};
 
 function getDefaultDateTime() {
   const now = new Date();
@@ -33,29 +47,31 @@ function formatDateTime(value) {
   });
 }
 
-// -------------------------------------------------------------------
-// RecentEntry — snapshot of the last saved log
-// -------------------------------------------------------------------
 function RecentEntry({ log }) {
   if (!log) {
-    return <p style={styles.empty}>Your most recent saved meal will show up here after you submit your first log.</p>;
+    return <p style={styles.empty}>Your most recent saved meal will appear here after your first log ✨</p>;
   }
   return (
     <div>
       <p style={styles.foodName}>{log.food_name}</p>
       <p style={styles.timestamp}>{formatDateTime(log.logged_at)}</p>
       <div style={styles.tags}>
-        {log.meal_type && <span style={styles.tagBlue}>{log.meal_type}</span>}
-        {log.mood      && <span style={styles.tagPurple}>{log.mood}</span>}
+        {log.meal_type && (
+          <span style={styles.tagGreen}>
+            {MEAL_ICONS[log.meal_type]} {log.meal_type}
+          </span>
+        )}
+        {log.mood && (
+          <span style={styles.tagSage}>
+            {MOOD_ICONS[log.mood]} {log.mood}
+          </span>
+        )}
       </div>
       {log.notes && <p style={styles.notes}>"{log.notes}"</p>}
     </div>
   );
 }
 
-// -------------------------------------------------------------------
-// LogFood — main page component
-// -------------------------------------------------------------------
 export default function LogFood() {
   const navigate = useNavigate();
   const user    = JSON.parse(localStorage.getItem("user") || "{}");
@@ -111,13 +127,12 @@ export default function LogFood() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Could not save your log.");
 
       setLastSavedLog(data.log);
       setMessage(data.message || "Food logged successfully.");
       setMessageType("success");
-      showToast("Food logged successfully!");
+      showToast("Food logged! 🌿");
       setForm({
         food_name: "",
         logged_at: getDefaultDateTime(),
@@ -145,26 +160,29 @@ export default function LogFood() {
       {/* Header */}
       <div style={styles.header}>
         <div>
-          <h1 style={styles.title}>Log Food</h1>
+          <div style={styles.titleRow}>
+            <span style={styles.titleIcon}>🥗</span>
+            <h1 style={styles.title}>Log Food</h1>
+          </div>
           <p style={styles.subtitle}>Track what you ate, how you felt, and when it happened</p>
         </div>
         <div style={styles.headerRight}>
-          <button style={styles.secondaryBtn} onClick={() => navigate("/history")}>View History</button>
-          <button style={styles.secondaryBtn} onClick={() => navigate("/insights")}>Insights</button>
+          <button style={styles.navBtn} onClick={() => navigate("/history")}>📋 History</button>
+          <button style={styles.navBtn} onClick={() => navigate("/insights")}>✨ Insights</button>
           <button style={styles.ghostBtn} onClick={handleLogout}>Log out</button>
         </div>
       </div>
 
       {/* Toast */}
       {toast && (
-        <div style={{ ...styles.toast, backgroundColor: toast.type === "error" ? "#ef4444" : "#4caf50" }}>
+        <div style={{ ...styles.toast, backgroundColor: toast.type === "error" ? "#d97b6c" : "#91ab6f" }}>
           {toast.message}
         </div>
       )}
 
       {/* Form card */}
       <div style={styles.card}>
-        <p style={styles.cardTitle}>New entry</p>
+        <p style={styles.cardTitle}>🌱 New entry</p>
 
         <form onSubmit={handleSubmit}>
 
@@ -173,7 +191,7 @@ export default function LogFood() {
             name="food_name"
             value={form.food_name}
             onChange={handleChange}
-            placeholder="Ex. turkey sandwich, yogurt parfait, iced coffee"
+            placeholder="Ex. turkey sandwich, yogurt parfait, iced coffee..."
             required
             style={styles.input}
           />
@@ -191,18 +209,18 @@ export default function LogFood() {
             <div style={{ flex: 1 }}>
               <label style={styles.label}>Meal type</label>
               <select name="meal_type" value={form.meal_type} onChange={handleChange} style={styles.input}>
-                {MEAL_TYPES.map(m => <option key={m} value={m}>{m}</option>)}
+                {MEAL_TYPES.map(m => <option key={m} value={m}>{MEAL_ICONS[m]} {m}</option>)}
               </select>
             </div>
             <div style={{ flex: 1, marginLeft: 10 }}>
               <label style={styles.label}>Mood</label>
               <select name="mood" value={form.mood} onChange={handleChange} style={styles.input}>
-                {MOODS.map(m => <option key={m} value={m}>{m}</option>)}
+                {MOODS.map(m => <option key={m} value={m}>{MOOD_ICONS[m]} {m}</option>)}
               </select>
             </div>
           </div>
 
-          <div style={{ marginTop: 12 }}>
+          <div style={{ marginTop: 14 }}>
             <p style={styles.label}>Quick meal picks</p>
             <div style={styles.chipRow}>
               {MEAL_TYPES.map(m => (
@@ -212,13 +230,13 @@ export default function LogFood() {
                   style={form.meal_type === m ? styles.chipActive : styles.chip}
                   onClick={() => setForm(prev => ({ ...prev, meal_type: m }))}
                 >
-                  {m}
+                  {MEAL_ICONS[m]} {m}
                 </button>
               ))}
             </div>
           </div>
 
-          <div style={{ marginTop: 12 }}>
+          <div style={{ marginTop: 14 }}>
             <p style={styles.label}>Mood shortcuts</p>
             <div style={styles.chipRow}>
               {MOODS.map(m => (
@@ -228,7 +246,7 @@ export default function LogFood() {
                   style={form.mood === m ? styles.chipActive : styles.chip}
                   onClick={() => setForm(prev => ({ ...prev, mood: m }))}
                 >
-                  {m}
+                  {MOOD_ICONS[m]} {m}
                 </button>
               ))}
             </div>
@@ -247,15 +265,16 @@ export default function LogFood() {
           {message && (
             <div style={{
               ...styles.messageBanner,
-              backgroundColor: messageType === "success" ? "#dcfce7" : "#fee2e2",
-              color:           messageType === "success" ? "#15803d"  : "#dc2626",
+              backgroundColor: messageType === "success" ? "#eef4e5" : "#fce8e4",
+              color:           messageType === "success" ? "#4a7c2f"  : "#c0392b",
+              border:          `1px solid ${messageType === "success" ? "#c8d7b0" : "#f5c2bb"}`,
             }}>
               {message}
             </div>
           )}
 
           <button type="submit" disabled={submitting} style={styles.submitBtn}>
-            {submitting ? "Saving..." : "Save food log"}
+            {submitting ? "Saving... 🌿" : "Save food log 🌿"}
           </button>
 
         </form>
@@ -263,7 +282,7 @@ export default function LogFood() {
 
       {/* Recent entry snapshot */}
       <div style={styles.card}>
-        <p style={styles.cardTitle}>Last saved</p>
+        <p style={styles.cardTitle}>🍀 Last saved</p>
         <RecentEntry log={lastSavedLog} />
       </div>
 
@@ -271,39 +290,38 @@ export default function LogFood() {
   );
 }
 
-// -------------------------------------------------------------------
-// Styles — matches History.js and Insights.js inline style approach
-// -------------------------------------------------------------------
 const styles = {
-  page:          { maxWidth: 680, margin: "0 auto", padding: "32px 16px", fontFamily: "Arial, sans-serif" },
+  page:          { maxWidth: 680, margin: "0 auto", padding: "32px 16px", fontFamily: "'Instrument Serif', Georgia, serif", backgroundColor: "#fffdf9", minHeight: "100vh" },
   header:        { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 12 },
   headerRight:   { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" },
-  title:         { fontSize: 28, fontWeight: "bold", color: "#2e4057", margin: 0 },
-  subtitle:      { fontSize: 14, color: "#888", marginTop: 4, marginBottom: 0 },
-  secondaryBtn:  { padding: "8px 14px", fontSize: 13, borderRadius: 10, border: "1px solid #ddd", backgroundColor: "#fff", color: "#333", cursor: "pointer", fontWeight: "500" },
-  ghostBtn:      { padding: "8px 14px", fontSize: 13, borderRadius: 10, border: "1px solid #ddd", backgroundColor: "#fff", color: "#888", cursor: "pointer" },
+  titleRow:      { display: "flex", alignItems: "center", gap: 10, marginBottom: 4 },
+  titleIcon:     { fontSize: 28 },
+  title:         { fontSize: 30, fontWeight: "bold", color: "#3a5a2a", margin: 0 },
+  subtitle:      { fontSize: 14, color: "#8a9e7a", marginTop: 4, marginBottom: 0 },
+  navBtn:        { padding: "8px 14px", fontSize: 13, borderRadius: 20, border: "1.5px solid #c8d7b0", backgroundColor: "#f5f9ee", color: "#4a7c2f", cursor: "pointer", fontWeight: "500", fontFamily: "inherit" },
+  ghostBtn:      { padding: "8px 14px", fontSize: 13, borderRadius: 20, border: "1.5px solid #e0dbd2", backgroundColor: "#faf8f4", color: "#9a8f82", cursor: "pointer", fontFamily: "inherit" },
 
-  card:          { backgroundColor: "#fff", border: "1px solid #e0e0e0", borderRadius: 12, padding: "16px 18px", marginBottom: 14 },
-  cardTitle:     { fontSize: 13, fontWeight: "600", color: "#888", margin: "0 0 14px 0" },
+  card:          { backgroundColor: "#ffffff", border: "1.5px solid #e8edd8", borderRadius: 18, padding: "20px 22px", marginBottom: 16, boxShadow: "0 2px 12px rgba(100, 130, 60, 0.06)" },
+  cardTitle:     { fontSize: 14, fontWeight: "600", color: "#7a9660", margin: "0 0 16px 0" },
 
-  label:         { display: "block", fontSize: 12, color: "#666", marginBottom: 4, marginTop: 12 },
-  input:         { width: "100%", padding: "8px 10px", fontSize: 13, borderRadius: 8, border: "1px solid #ddd", boxSizing: "border-box", outline: "none", fontFamily: "Arial, sans-serif" },
+  label:         { display: "block", fontSize: 12, color: "#8a9e7a", marginBottom: 5, marginTop: 14, textTransform: "uppercase", letterSpacing: "0.03em" },
+  input:         { width: "100%", padding: "9px 12px", fontSize: 14, borderRadius: 12, border: "1.5px solid #dfe8cc", boxSizing: "border-box", outline: "none", fontFamily: "inherit", backgroundColor: "#fafdf5", color: "#3a4a2e", transition: "border-color 0.2s" },
   row:           { display: "flex", gap: 0, marginTop: 0 },
 
-  chipRow:       { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 },
-  chip:          { padding: "5px 12px", fontSize: 12, borderRadius: 20, border: "1px solid #ddd", backgroundColor: "#f9f9f9", color: "#555", cursor: "pointer", textTransform: "capitalize" },
-  chipActive:    { padding: "5px 12px", fontSize: 12, borderRadius: 20, border: "1px solid #c4c0f5", backgroundColor: "#eeedfe", color: "#3c3489", cursor: "pointer", fontWeight: "600", textTransform: "capitalize" },
+  chipRow:       { display: "flex", flexWrap: "wrap", gap: 7, marginTop: 6 },
+  chip:          { padding: "6px 13px", fontSize: 12, borderRadius: 20, border: "1.5px solid #dfe8cc", backgroundColor: "#fafdf5", color: "#6a8a50", cursor: "pointer", textTransform: "capitalize", fontFamily: "inherit", transition: "all 0.15s" },
+  chipActive:    { padding: "6px 13px", fontSize: 12, borderRadius: 20, border: "1.5px solid #91ab6f", backgroundColor: "#dfeacc", color: "#3a5a2a", cursor: "pointer", fontWeight: "600", textTransform: "capitalize", fontFamily: "inherit" },
 
-  messageBanner: { padding: "10px 14px", borderRadius: 8, fontSize: 13, marginTop: 12 },
-  submitBtn:     { marginTop: 16, width: "100%", padding: "12px", fontSize: 14, fontWeight: "bold", borderRadius: 10, border: "none", backgroundColor: "#3c3489", color: "#fff", cursor: "pointer" },
+  messageBanner: { padding: "10px 14px", borderRadius: 10, fontSize: 13, marginTop: 14 },
+  submitBtn:     { marginTop: 18, width: "100%", padding: "13px", fontSize: 15, fontWeight: "bold", borderRadius: 14, border: "none", backgroundColor: "#91ab6f", color: "#fff", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.02em", transition: "background-color 0.2s" },
 
-  foodName:      { fontWeight: "bold", fontSize: 16, color: "#333", margin: "0 0 6px 0" },
-  tags:          { display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6 },
-  tagBlue:       { fontSize: 12, backgroundColor: "#dbeafe", color: "#1d4ed8", borderRadius: 20, padding: "2px 10px" },
-  tagPurple:     { fontSize: 12, backgroundColor: "#ede9fe", color: "#6d28d9", borderRadius: 20, padding: "2px 10px" },
-  notes:         { fontSize: 13, color: "#666", fontStyle: "italic", margin: "4px 0" },
-  timestamp:     { fontSize: 12, color: "#aaa", margin: "2px 0" },
-  empty:         { textAlign: "center", color: "#ccc", fontSize: 13, padding: "12px 0", margin: 0 },
+  foodName:      { fontWeight: "bold", fontSize: 17, color: "#3a4a2e", margin: "0 0 6px 0" },
+  tags:          { display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6, marginTop: 6 },
+  tagGreen:      { fontSize: 12, backgroundColor: "#dfeacc", color: "#3a5a2a", borderRadius: 20, padding: "3px 11px", border: "1px solid #c8d7b0" },
+  tagSage:       { fontSize: 12, backgroundColor: "#eef2e8", color: "#5a7a40", borderRadius: 20, padding: "3px 11px", border: "1px solid #d0dcc0" },
+  notes:         { fontSize: 13, color: "#8a9e7a", fontStyle: "italic", margin: "6px 0 0" },
+  timestamp:     { fontSize: 12, color: "#b5b0a5", margin: "2px 0" },
+  empty:         { textAlign: "center", color: "#c5bfb5", fontSize: 14, padding: "14px 0", margin: 0 },
 
-  toast:         { position: "fixed", top: 20, right: 20, padding: "12px 20px", borderRadius: 10, color: "#fff", fontWeight: "bold", fontSize: 14, zIndex: 1000, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" },
+  toast:         { position: "fixed", top: 20, right: 20, padding: "12px 20px", borderRadius: 14, color: "#fff", fontWeight: "bold", fontSize: 14, zIndex: 1000, boxShadow: "0 4px 16px rgba(100,130,60,0.2)", fontFamily: "inherit" },
 };
