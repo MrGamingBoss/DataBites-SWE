@@ -3,6 +3,7 @@
 // PBI #4 - View weekly and monthly food log trends with generated summaries
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = "http://127.0.0.1:5000";
 
@@ -145,6 +146,8 @@ function SummaryBlurb({ text, generatedAt }) {
 // Insights — main page component
 // -------------------------------------------------------------------
 export default function Insights() {
+  const navigate = useNavigate();
+
   const user    = JSON.parse(localStorage.getItem("user") || "{}");
   const user_id = user.user_id;
 
@@ -228,6 +231,8 @@ export default function Insights() {
           <p style={styles.subtitle}>Reflect on your eating patterns over time</p>
         </div>
         <div style={styles.headerRight}>
+          <button style={styles.secondaryBtn} onClick={() => navigate("/home")}>Home</button>
+          <button style={styles.secondaryBtn} onClick={() => navigate("/history")}>View History</button>
           <select
             value={period}
             onChange={e => setPeriod(e.target.value)}
@@ -329,9 +334,10 @@ export default function Insights() {
 const styles = {
   page:            { maxWidth: 680, margin: "0 auto", padding: "32px 16px", fontFamily: "Arial, sans-serif" },
   header:          { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 12 },
-  headerRight:     { display: "flex", gap: 8, alignItems: "center" },
+  headerRight:     { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" },
   title:           { fontSize: 28, fontWeight: "bold", color: "#2e4057", margin: 0 },
   subtitle:        { fontSize: 14, color: "#888", marginTop: 4, marginBottom: 0 },
+  secondaryBtn:    { padding: "8px 14px", fontSize: 13, borderRadius: 10, border: "1px solid #ddd", backgroundColor: "#fff", color: "#333", cursor: "pointer", fontWeight: "500" },
   select:          { padding: "8px 12px", fontSize: 13, borderRadius: 10, border: "1px solid #ddd", backgroundColor: "#fff", color: "#333", cursor: "pointer", outline: "none" },
   refreshBtn:      { padding: "8px 14px", fontSize: 13, borderRadius: 10, border: "1px solid #ddd", backgroundColor: "#fff", color: "#555", cursor: "pointer", fontWeight: "500" },
 

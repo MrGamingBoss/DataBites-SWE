@@ -2,6 +2,7 @@
 // PBI #5 - view, edit, delete, undo food log entries
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = "http://127.0.0.1:5000";
 
@@ -125,6 +126,8 @@ function LogCard({ log, onEdit, onDelete, onUndo, highlighted }) {
 // History — main page component
 // -------------------------------------------------------------------
 export default function History() {
+  const navigate = useNavigate();
+
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const user_id = user.user_id;
 
@@ -227,8 +230,16 @@ export default function History() {
 
   return (
     <div style={styles.page}>
-      <h1 style={styles.title}>Food History</h1>
-      <p style={styles.subtitle}>View and manage your past food logs</p>
+      <div style={styles.header}>
+        <div>
+          <h1 style={styles.title}>Food History</h1>
+          <p style={styles.subtitle}>View and manage your past food logs</p>
+        </div>
+        <div style={styles.headerRight}>
+          <button style={styles.secondaryBtn} onClick={() => navigate("/home")}>Home</button>
+          <button style={styles.secondaryBtn} onClick={() => navigate("/insights")}>Insights</button>
+        </div>
+      </div>
 
       <input
         type="text"
@@ -266,8 +277,14 @@ export default function History() {
       {!loading && !error && filtered.length > 0 && (
         <div style={styles.list}>
           {filtered.map(log => (
-            <LogCard key={log.log_id} log={log} onEdit={handleEdit} onDelete={handleDelete}
-              onUndo={handleUndo} highlighted={highlightedId === log.log_id} />
+            <LogCard
+              key={log.log_id}
+              log={log}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onUndo={handleUndo}
+              highlighted={highlightedId === log.log_id}
+            />
           ))}
         </div>
       )}
@@ -277,8 +294,11 @@ export default function History() {
 
 const styles = {
   page:       { maxWidth: 680, margin: "0 auto", padding: "32px 16px", fontFamily: "Arial, sans-serif" },
+  header:     { display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24, flexWrap: "wrap", gap: 12 },
+  headerRight:{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" },
   title:      { fontSize: 28, fontWeight: "bold", color: "#2e4057", margin: 0 },
   subtitle:   { fontSize: 14, color: "#888", marginTop: 4, marginBottom: 20 },
+  secondaryBtn:{ padding: "8px 14px", fontSize: 13, borderRadius: 10, border: "1px solid #ddd", backgroundColor: "#fff", color: "#333", cursor: "pointer", fontWeight: "500" },
   searchBar:  { width: "100%", padding: "10px 14px", fontSize: 14, borderRadius: 10, border: "1px solid #ddd", marginBottom: 20, boxSizing: "border-box", outline: "none" },
   list:       { display: "flex", flexDirection: "column", gap: 12 },
   card:       { display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: 16, borderRadius: 12, border: "1px solid #e0e0e0", backgroundColor: "#fff", transition: "border-color 0.3s, background-color 0.3s" },
